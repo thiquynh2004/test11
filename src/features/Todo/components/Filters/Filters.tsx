@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Types } from '../../contexts/actionTypes';
 import { Task, TodoContext } from '../../contexts/TodoProvider';
-import toDoApi from '../../Service/todoApis';
 import styles from './filter.module.css';
 
 export enum FILTER {
@@ -23,50 +22,51 @@ const filterOption = [
     label: FILTER.Complete
   }
 ];
-type PromiseVoid = () => Promise<void>;
 
 export const Filters = (): JSX.Element => {
-  const { dispatch } = useContext(TodoContext);
+  const { dispatch, taskState } = useContext(TodoContext);
+  const { pernamentTasks } = taskState;
   const [valueOption, setValueOption] = useState(FILTER.All);
-  const [taskFilter, setTaskFilter] = useState<any>([]);
 
   useEffect(() => {
-    const getAllTask: PromiseVoid = async () => {
-      const result = await toDoApi.getAllTask();
-      setTaskFilter(result);
-    };
-    getAllTask().then(
-      () => {},
-      () => {}
-    );
     switch (valueOption) {
       case FILTER.All:
         dispatch({
           type: Types.GET_ALL_TASK,
-          tasks: taskFilter
+          tasks: pernamentTasks
         });
         break;
       case FILTER.Active:
         dispatch({
           type: Types.GET_ALL_TASK,
-          tasks: taskFilter.filter((task: Task) => !task.completed)
+          tasks: pernamentTasks.filter((task: Task) => !task.completed)
         });
         break;
       case FILTER.Complete:
         dispatch({
           type: Types.GET_ALL_TASK,
-          tasks: taskFilter.filter((task: Task) => task.completed)
+          tasks: pernamentTasks.filter((task: Task) => task.completed)
         });
     }
   }, [valueOption]);
 
-  return <div className={styles.container}>
-    <select className={styles.selectBox} value={valueOption} onChange={(e) => {
-      setValueOption(e.target.value as FILTER);
-    }}>
-     {filterOption.map((item) => {
-       return <option value={item.label} key={item.id}>{item.label}</option>;
-     })}
-     </select>
-    </div>;
+  return (
+    <div className={styles.container}>
+      <select
+        className={styles.selectBox}
+        value={valueOption}
+        onChange={(e) => {
+          setValueOption(e.target.value as FILTER);
+        }}
+      >
+        {filterOption.map((item) => {
+          return (
+            <option value={item.label} key={item.id}>
+              {item.label}
+            </option>
+          );
+        })}
+      </select>
+    </div>
+  );
 };

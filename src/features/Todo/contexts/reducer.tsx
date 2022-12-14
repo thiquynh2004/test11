@@ -3,6 +3,7 @@ import { Task, TaskState } from './TodoProvider';
 
 export const initialState: TaskState = {
   tasks: [],
+  pernamentTasks: [],
   taskDetail: {
     id: 0,
     description: '',
@@ -12,16 +13,26 @@ export const initialState: TaskState = {
 };
 
 export type todoAction =
-| { type: Types.GET_ALL_TASK, tasks: Task[] }
-| { type: Types.ADD_TASK, tasks: Task[] }
-| { type: Types.DELETE_TASK, tasks: Task, id: number }
-| { type: Types.UPDATE_STATUS, tasks: Task, id: number }
-| { type: Types.EDIT_TASK, taskDetail: Task}
-| { type: Types.GET_TASK_DETAIL, taskDetail: Task }
-| { type: Types.CLEAR_MODAL, payload: Task }
+  | { type: Types.GET_ALL_TASK, tasks: Task[] }
+  | { type: Types.GET_ALL_TASK_INIT, tasks: Task[] }
+  | { type: Types.ADD_TASK, tasks: Task[] }
+  | { type: Types.DELETE_TASK, tasks: Task, id: number }
+  | { type: Types.UPDATE_STATUS, tasks: Task, id: number }
+  | { type: Types.EDIT_TASK, taskDetail: Task }
+  | { type: Types.GET_TASK_DETAIL, taskDetail: Task }
+  | { type: Types.CLEAR_MODAL, payload: Task };
 
-export const todoReducer = (state: TaskState, action: todoAction): TaskState => {
+export const todoReducer = (
+  state: TaskState,
+  action: todoAction
+): TaskState => {
   switch (action.type) {
+    case Types.GET_ALL_TASK_INIT:
+      return {
+        ...state,
+        tasks: action.tasks,
+        pernamentTasks: action.tasks
+      };
     case Types.GET_ALL_TASK:
       return {
         ...state,
@@ -40,7 +51,8 @@ export const todoReducer = (state: TaskState, action: todoAction): TaskState => 
     case Types.UPDATE_STATUS:
       return {
         ...state,
-        tasks: state.tasks.map((task) => task.id === action.id ? { ...task, completed: !task.completed } : task
+        tasks: state.tasks.map((task) =>
+          task.id === action.id ? { ...task, completed: !task.completed } : task
         )
       };
     case Types.EDIT_TASK:

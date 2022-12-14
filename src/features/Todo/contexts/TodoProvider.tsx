@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import React, { createContext, useEffect, useReducer, useState } from 'react';
+import React, { createContext, useEffect, useReducer } from 'react';
 import toDoApi from '../Service/todoApis';
 import { Types } from './actionTypes';
 import { initialState, todoReducer } from './reducer';
-
 export interface TaskContext {
   taskState: TaskState
 }
@@ -17,8 +16,9 @@ export interface Task {
   createDate: string
 }
 
-export interface TaskState{
+export interface TaskState {
   tasks: Task[]
+  pernamentTasks: Task[]
   taskDetail: Task
 }
 
@@ -30,15 +30,15 @@ export const TodoContext = createContext<{
   dispatch: () => undefined
 });
 
-interface props{
+interface props {
   children: React.ReactNode
 }
 
-export const getAll = async (dispatch: any) => {
+export const getAll = async (dispatch: React.Dispatch<any>) => {
   try {
     const result = await toDoApi.getAllTask();
     dispatch({
-      type: Types.GET_ALL_TASK,
+      type: Types.GET_ALL_TASK_INIT,
       tasks: result
     });
   } catch (error) {
@@ -51,7 +51,11 @@ const TodoProvider: React.FC<props> = ({ children }) => {
   useEffect(() => {
     getAll(dispatch);
   }, []);
-  return <TodoContext.Provider value={{ taskState, dispatch }} >{children}</TodoContext.Provider>;
+  return (
+    <TodoContext.Provider value={{ taskState, dispatch }}>
+      {children}
+    </TodoContext.Provider>
+  );
 };
 
 export default TodoProvider;

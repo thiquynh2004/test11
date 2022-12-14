@@ -15,7 +15,7 @@ export const AddTask = (): JSX.Element => {
     try {
       const result = await toDoApi.createTask(data);
       dispatch({
-        type: Types.GET_ALL_TASK,
+        type: Types.GET_ALL_TASK_INIT,
         tasks: result.data
       });
       alert('Add task successfully');
@@ -31,38 +31,42 @@ export const AddTask = (): JSX.Element => {
       completed: false,
       createDate: ''
     },
-    onSubmit: values => {
+    onSubmit: (values) => {
       dispatch(addTask(values));
     }
   });
   const handleChangeDate = (e: React.FormEvent<HTMLInputElement>) => {
-    const createDate = moment(new Date(e.currentTarget.value)).format('MM-DD-YYYY, h:mm:ss a');
+    const createDate = moment(new Date(e.currentTarget.value)).format(
+      'MM-DD-YYYY, h:mm:ss a'
+    );
     formik.setFieldValue('createDate', createDate);
   };
   return (
     <div className={styles.wrapper}>
       <form onSubmit={formik.handleSubmit} className={styles.form}>
-       <input
-         id="description"
-         name="description"
-         type="text"
-         placeholder="Add Task"
-         className={styles.inputTask}
-         onChange={formik.handleChange}
-         value={formik.values.description}
-         required
-       />
-       <input
-         id="createDate"
-         name="createDate"
-         type="datetime-local"
-         className={styles.inputTaskTimer}
-         onChange={handleChangeDate}
-         required
-         min={moment(new Date()).format('YYYY-MM-DDTHH:mm')}
-       />
-       <button type="submit" className={styles.buttonAddTask}>Add task</button>
-     </form>
-      </div>
+        <input
+          id="description"
+          name="description"
+          type="text"
+          placeholder="Add Task"
+          className={styles.inputTask}
+          onChange={formik.handleChange}
+          value={formik.values.description}
+          required
+        />
+        <input
+          id="createDate"
+          name="createDate"
+          type="datetime-local"
+          className={styles.inputTaskTimer}
+          onChange={handleChangeDate}
+          required
+          min={moment(new Date()).format('YYYY-MM-DDTHH:mm')}
+        />
+        <button type="submit" className={styles.buttonAddTask}>
+          Add task
+        </button>
+      </form>
+    </div>
   );
 };
