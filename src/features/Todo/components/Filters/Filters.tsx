@@ -1,27 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Types } from '../../contexts/actionTypes';
-import { Task, TodoContext } from '../../contexts/TodoProvider';
-import styles from './filter.module.css';
+import React, { useContext, useEffect, useState } from "react";
+import { Types } from "../../contexts/actionTypes";
+import { Task, TodoContext } from "../../contexts/TodoProvider";
+import styles from "./filter.module.css";
 
 export enum FILTER {
-  All = 'All',
-  Active = 'Active',
-  Complete = 'Complete',
+  All = "All",
+  Active = "Active",
+  Complete = "Complete",
 }
-const filterOption = [
-  {
-    id: 1,
-    label: FILTER.All
-  },
-  {
-    id: 2,
-    label: FILTER.Active
-  },
-  {
-    id: 3,
-    label: FILTER.Complete
-  }
-];
 
 export const Filters = (): JSX.Element => {
   const { dispatch, taskState } = useContext(TodoContext);
@@ -33,19 +19,19 @@ export const Filters = (): JSX.Element => {
       case FILTER.All:
         dispatch({
           type: Types.GET_ALL_TASK,
-          tasks: pernamentTasks
+          tasks: pernamentTasks,
         });
         break;
       case FILTER.Active:
         dispatch({
           type: Types.GET_ALL_TASK,
-          tasks: pernamentTasks.filter((task: Task) => !task.completed)
+          tasks: pernamentTasks.filter((task: Task) => !task.completed),
         });
         break;
       case FILTER.Complete:
         dispatch({
           type: Types.GET_ALL_TASK,
-          tasks: pernamentTasks.filter((task: Task) => task.completed)
+          tasks: pernamentTasks.filter((task: Task) => task.completed),
         });
     }
   }, [valueOption]);
@@ -59,10 +45,10 @@ export const Filters = (): JSX.Element => {
           setValueOption(e.target.value as FILTER);
         }}
       >
-        {filterOption.map((item) => {
+        {Object.keys(FILTER).map((filter, index) => {
           return (
-            <option value={item.label} key={item.id}>
-              {item.label}
+            <option value={filter} key={index}>
+              {filter}
             </option>
           );
         })}
